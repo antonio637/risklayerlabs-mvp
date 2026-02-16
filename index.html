@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<body style="background:#0b1220;color:white;font-family:Arial;text-align:center;padding:50px">
+
+<h1>RiskLayerLabs</h1>
+<p>Cyber Risk Score</p>
+
+<input id="url" placeholder="https://example.com" style="padding:10px;width:300px">
+<button onclick="analyze()">Analyze</button>
+
+<h2 id="result"></h2>
+
+<br><br>
+
+<a href="PEGAR_LINK_DE_LEMON_AQUI" target="_blank">
+<button>Unlock Full Report</button>
+</a>
+
+<script>
+
+async function analyze(){
+
+let site = document.getElementById("url").value;
+
+let res = await fetch("PEGAR_LINK_WORKER_AQUI/analyze?url="+site);
+let data = await res.json();
+
+document.getElementById("result").innerHTML =
+"Score: "+data.score+"<br>Level: "+data.level+"<br>Risks: "+data.risks;
+
+}
+
+</script>
+
+</body>
+</html>
