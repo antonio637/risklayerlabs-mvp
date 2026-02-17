@@ -1,129 +1,332 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-<meta charset="utf-8">
-<title>RiskLayerLabs</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RiskLayerLabs</title>
 
-<style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-body{
-font-family:'Inter',sans-serif;
-background:#0b1220;
-color:white;
-text-align:center;
-padding:40px;
-margin:0;
-}
+  <style>
+    :root{
+      --bg:#061022;
+      --panel:#0b1630;
+      --panel2:#0a142a;
+      --line:rgba(135,170,255,.22);
+      --txt:#eaf1ff;
+      --muted:#9fb0dd;
+      --accent:#2ec7ff;
+      --accent2:#1aa9df;
+      --btn:#0f2a4b;
+      --shadow: 0 18px 60px rgba(0,0,0,.45);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;
+      color:var(--txt);
+      background:
+        radial-gradient(900px 520px at 18% 10%, rgba(46,199,255,.20), transparent 60%),
+        radial-gradient(900px 520px at 82% 10%, rgba(69,120,255,.18), transparent 60%),
+        linear-gradient(180deg, #061022 0%, #030a18 100%);
+      padding:26px 18px;
+    }
+    .wrap{max-width:980px;margin:0 auto}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .brand img{
+      width:44px;height:44px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.2);
+    }
+    .brand h1{margin:0;font-size:34px;font-weight:800;letter-spacing:.2px}
+    .brand .sub{margin-top:3px;font-size:13px;color:var(--muted)}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 14px;border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(10,20,42,.55);
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
 
-.container{
-max-width:700px;
-margin:auto;
-}
+    .panel{
+      border-radius:var(--radius);
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(11,22,48,.92), rgba(7,14,30,.88));
+      box-shadow:var(--shadow);
+      padding:20px 18px;
+    }
+    .headline{
+      text-align:left;
+      font-weight:800;
+      font-size:34px;
+      line-height:1.08;
+      margin:4px 0 10px;
+    }
+    .desc{
+      text-align:left;
+      margin:0 0 16px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.55;
+      max-width:820px;
+    }
 
-h1{
-font-size:40px;
-margin-bottom:5px;
-}
+    .inputRow{display:flex;gap:12px;flex-wrap:wrap;justify-content:flex-start}
+    .url{
+      flex:1 1 520px;
+      min-width:260px;
+      padding:14px 14px;
+      border-radius:14px;
+      border:1px solid rgba(135,170,255,.22);
+      background:rgba(3,10,24,.55);
+      color:var(--txt);
+      outline:none;
+      font-size:15px;
+    }
+    .url:focus{border-color:rgba(46,199,255,.55); box-shadow:0 0 0 4px rgba(46,199,255,.10)}
+    .btnRow{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      display:inline-flex;align-items:center;gap:10px;
+      padding:12px 16px;border-radius:14px;
+      border:1px solid rgba(135,170,255,.22);
+      background:rgba(3,10,24,.30);
+      color:var(--txt);
+      font-weight:800;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s;
+      text-decoration:none;
+    }
+    .btn:hover{transform:translateY(-1px); border-color:rgba(46,199,255,.45)}
+    .btnPrimary{
+      border:0;
+      background:linear-gradient(90deg, var(--accent), #3d7cff);
+      color:#04101a;
+    }
+    .btnPrimary:hover{filter:brightness(.98)}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none}
 
-.subtitle{
-color:#9aa4c7;
-margin-bottom:30px;
-}
+    /* Result card */
+    .result{
+      margin-top:16px;
+      display:none;
+      text-align:left;
+      border-radius:18px;
+      border:1px solid rgba(135,170,255,.22);
+      background:rgba(3,10,24,.30);
+      padding:14px;
+    }
+    .kpis{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:10px}
+    @media (max-width:900px){.kpis{grid-template-columns:1fr}}
+    .kpi{
+      border-radius:16px;
+      border:1px solid rgba(135,170,255,.18);
+      background:rgba(10,20,42,.55);
+      padding:12px 12px;
+    }
+    .k{color:var(--muted);font-size:12px}
+    .v{margin-top:4px;font-size:16px;font-weight:800;word-break:break-word}
+    .scoreBig{font-size:44px;font-weight:900;margin-top:10px}
+    .lvl{display:inline-block;margin-top:8px;padding:7px 10px;border-radius:999px;border:1px solid rgba(135,170,255,.18);background:rgba(10,20,42,.55);font-weight:900;font-size:12px}
 
-input{
-padding:14px;
-width:100%;
-border-radius:10px;
-border:none;
-background:#111a2e;
-color:white;
-font-size:16px;
-}
+    .low{color:#4ade80}
+    .medium{color:#facc15}
+    .high{color:#f87171}
 
-button{
-margin-top:15px;
-padding:14px;
-width:100%;
-border-radius:10px;
-border:none;
-background:#00c2ff;
-font-weight:700;
-font-size:16px;
-cursor:pointer;
-}
+    ul{margin:10px 0 0 18px}
+    li{margin:6px 0}
 
-.card{
-margin-top:30px;
-background:#111a2e;
-padding:25px;
-border-radius:14px;
-display:none;
-}
+    .note{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.45;
+    }
 
-.score{
-font-size:36px;
-font-weight:800;
-}
-
-.low{color:#4ade80;}
-.medium{color:#facc15;}
-.high{color:#f87171;}
-
-.info{
-font-size:12px;
-color:#8b93b0;
-margin-top:20px;
-}
-
-</style>
+    .err{
+      margin-top:10px;
+      color:#ffb3b3;
+      font-size:12px;
+      display:none;
+    }
+  </style>
 </head>
 
 <body>
+  <div class="wrap">
 
-<div class="container">
+    <div class="topbar">
+      <div class="brand">
+        <img src="./RiskLayerLabs_Lemon_Logo_512.png" alt="RiskLayerLabs" onerror="this.style.display='none'">
+        <div>
+          <h1>RiskLayerLabs</h1>
+          <div class="sub">Visibilidad del riesgo digital (análisis pasivo)</div>
+        </div>
+      </div>
 
-<h1>RiskLayerLabs</h1>
-<div class="subtitle">Visibilidad del riesgo digital</div>
+      <div class="pill">⚡ Análisis en segundos • Headers/TLS públicos</div>
+    </div>
 
-<input id="url" placeholder="https://example.com">
+    <div class="panel">
+      <div class="headline">Pegá una URL y obtené un score<br>claro + hallazgos accionables.</div>
+      <p class="desc">
+        Diagnóstico rápido para PyMEs, medianas y grandes. No es pentest:
+        evalúa configuración visible (headers/TLS).
+      </p>
 
-<button onclick="analyze()">🔍 Analizar sitio</button>
+      <div class="inputRow">
+        <input id="url" class="url" value="https://www.google.com/" />
+      </div>
 
-<div id="resultCard" class="card">
+      <div class="btnRow">
+        <button id="anBtn" class="btn btnPrimary" onclick="analyze()">🔍 Analizar sitio</button>
+        <button class="btn" onclick="openStandard()">📄 Informe estándar (PDF)</button>
+        <a class="btn" target="_blank" rel="noopener"
+           href="https://risklayerlabs.lemonsqueezy.com/checkout/buy/fa60500d-65d7-430a-8a52-9c64b4b49358">💳 Premium (Lemon)</a>
+        <button class="btn" onclick="openPremium()">⭐ Abrir informe premium</button>
+      </div>
 
-<h3>Resultado del análisis</h3>
+      <div id="err" class="err"></div>
 
-<div id="score" class="score"></div>
-<div id="level"></div>
+      <div id="result" class="result">
+        <div class="kpis">
+          <div class="kpi">
+            <div class="k">Sitio</div>
+            <div class="v" id="rTarget">—</div>
+          </div>
+          <div class="kpi">
+            <div class="k">Score</div>
+            <div class="v"><span class="scoreBig" id="rScore">—</span></div>
+          </div>
+          <div class="kpi">
+            <div class="k">Nivel</div>
+            <div class="v"><span class="lvl" id="rLevel">—</span></div>
+          </div>
+        </div>
 
-<ul id="risks"></ul>
+        <div style="margin-top:12px;font-weight:900">Riesgos detectados</div>
+        <ul id="rRisks"></ul>
 
-<button onclick="downloadReport()">📄 Informe Estándar</button>
+        <div class="note">
+          Evaluación pasiva basada en configuraciones públicas visibles. No constituye auditoría de seguridad ni prueba de penetración.
+        </div>
+      </div>
 
-<br><br>
-
-<a href="https://risklayerlabs.lemonsqueezy.com/checkout/buy/fa60500d-65d7-430a-8a52-9c64b4b49358" target="_blank">
-<button>💳 Desbloquear Informe Premium</button>
-</a>
-
-</div>
-
-<div class="info">
-Análisis pasivo basado en headers HTTP.<br>
-No se realizan pruebas intrusivas.
-</div>
-
-</div>
+    </div>
+  </div>
 
 <script>
+  const API = "https://yellow-field-4bee.antonio-5f5.workers.dev/analyze?url=";
 
-async function analyze(){
+  function levelClass(level){
+    const v = String(level || "").toLowerCase();
+    if(v.includes("low")) return "low";
+    if(v.includes("medium")) return "medium";
+    if(v.includes("high")) return "high";
+    return "";
+  }
 
-let site = document.getElementById("url").value;
+  function showError(msg){
+    const el = document.getElementById("err");
+    el.style.display = "block";
+    el.textContent = msg;
+  }
+  function clearError(){
+    const el = document.getElementById("err");
+    el.style.display = "none";
+    el.textContent = "";
+  }
 
-let res = await fetch("https://yellow-field-4bee.antonio-5f5.workers.dev/analyze?url="+site);
-let data = await res.json();
+  async function analyze(){
+    clearError();
+    const site = document.getElementById("url").value.trim();
 
-data
+    if(!site){
+      showError("Pegá una URL válida (ej: https://example.com).");
+      return;
+    }
+    if(!site.startsWith("http://") && !site.startsWith("https://")){
+      showError("La URL debe empezar con http:// o https://");
+      return;
+    }
 
+    const btn = document.getElementById("anBtn");
+    btn.disabled = true;
+    btn.textContent = "Analizando…";
+
+    try{
+      const res = await fetch(API + encodeURIComponent(site));
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data?.error || "Error del análisis");
+      }
+
+      // Normalizamos y guardamos para report.html
+      data.client = data.client || "Cliente";
+      data.generatedAt = new Date().toISOString();
+      data.target = data.target || site;
+      data.risks = Array.isArray(data.risks) ? data.risks : [];
+
+      localStorage.setItem("risklayer_report_data", JSON.stringify(data));
+
+      // Pintar UI
+      document.getElementById("result").style.display = "block";
+      document.getElementById("rTarget").textContent = data.target;
+      document.getElementById("rScore").textContent = (data.score ?? "—") + "/100";
+
+      const lvl = document.getElementById("rLevel");
+      lvl.textContent = data.level ?? "—";
+      lvl.className = "lvl " + levelClass(data.level);
+
+      const list = document.getElementById("rRisks");
+      list.innerHTML = data.risks.length
+        ? data.risks.map(r => `<li>${String(r)}</li>`).join("")
+        : "<li>Sin hallazgos relevantes.</li>";
+
+    }catch(e){
+      showError("No se pudo analizar. Probá con https://example.com o revisá si el Worker responde. ("+ e.message +")");
+    }finally{
+      btn.disabled = false;
+      btn.textContent = "🔍 Analizar sitio";
+    }
+  }
+
+  function openStandard(){
+    const raw = localStorage.getItem("risklayer_report_data");
+    if(!raw){
+      showError("Primero hacé un análisis y después abrí el informe estándar.");
+      return;
+    }
+    // opcional: pedir nombre cliente
+    const name = prompt("Nombre del cliente (para el PDF):", "Cliente") || "Cliente";
+    const d = JSON.parse(raw);
+    d.client = name;
+    localStorage.setItem("risklayer_report_data", JSON.stringify(d));
+
+    window.open("report.html?mode=free", "_blank");
+  }
+
+  function openPremium(){
+    const raw = localStorage.getItem("risklayer_report_data");
+    if(!raw){
+      showError("Primero hacé un análisis y después abrí el informe premium.");
+      return;
+    }
+    const name = prompt("Nombre del cliente (para el PDF):", "Cliente") || "Cliente";
+    const d = JSON.parse(raw);
+    d.client = name;
+    localStorage.setItem("risklayer_report_data", JSON.stringify(d));
+
+    window.open("report.html?mode=premium", "_blank");
+  }
+</script>
+</body>
+</html>
