@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Aviso Legal - RiskLayerLabs</title>
+<style>
+body{font-family:Arial;padding:40px;max-width:900px;margin:auto;}
+h1{color:#0b1220;}
+</style>
+</head>
+
+<body>
+
+<h1>Aviso Legal</h1>
+
+<p>
+RiskLayerLabs proporciona evaluaciones automatizadas de postura digital basadas exclusivamente en información pública accesible desde Internet.
+</p>
+
+<p>
+El análisis realizado:
+</p>
+
+<ul>
+<li>No implica explotación de sistemas</li>
+<li>No realiza pruebas intrusivas</li>
+<li>No constituye una auditoría de seguridad formal</li>
+<li>No debe interpretarse como certificación de vulnerabilidades</li>
+</ul>
+
+<p>
+Los resultados representan un diagnóstico informativo basado en configuraciones visibles externamente.
+</p>
+
+<h2>Limitación de Responsabilidad</h2>
+
+<p>
+RiskLayerLabs no garantiza la detección total de riesgos ni la inexistencia de vulnerabilidades.
+</p>
+
+<p>
+El informe no sustituye auditorías técnicas ni constituye asesoramiento legal.
+</p>
+
+<h2>Uso Adecuado</h2>
+
+<p>
+El servicio está destinado exclusivamente a evaluación preventiva y mejora de postura digital.
+</p>
+
+<p>
+Queda prohibido utilizar los resultados para difamación, presión comercial o exposición pública sin contexto.
+</p>
+
+<h2>Naturaleza del Servicio</h2>
+
+<p>
+RiskLayerLabs realiza análisis pasivo sin interacción invasiva ni pruebas de penetración.
+</p>
+
+</body>
+</html>
