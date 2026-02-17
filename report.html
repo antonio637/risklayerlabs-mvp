@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>RiskLayerLabs Report</title>
+
+<style>
+body{
+font-family:Arial;
+padding:40px;
+}
+
+h1{
+color:#0b1220;
+}
+
+.box{
+border:1px solid #ccc;
+padding:20px;
+border-radius:10px;
+margin-bottom:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>RiskLayerLabs - Informe de Riesgo</h1>
+
+<div class="box">
+<h3 id="cliente"></h3>
+<p id="fecha"></p>
+</div>
+
+<div class="box">
+<h3>Score</h3>
+<p id="score"></p>
+</div>
+
+<div class="box">
+<h3>Nivel</h3>
+<p id="nivel"></p>
+</div>
+
+<div class="box">
+<h3>Riesgos Detectados</h3>
+<p id="riesgos"></p>
+</div>
+
+<button onclick="window.print()">Guardar como PDF</button>
+
+<script>
+
+let data = JSON.parse(localStorage.getItem("report"));
+
+document.getElementById("cliente").innerHTML =
+"Cliente: "+data.cliente;
+
+document.getElementById("fecha").innerHTML =
+"Fecha: "+new Date().toLocaleString();
+
+document.getElementById("score").innerHTML =
+data.score;
+
+document.getElementById("nivel").innerHTML =
+data.level;
+
+document.getElementById("riesgos").innerHTML =
+data.risks.join("<br>");
+
+</script>
+
+</body>
+</html>
