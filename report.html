@@ -1,132 +1,158 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<title>RiskLayerLabs Report</title>
-
-<style>
-body{
-font-family:Arial;
-padding:40px;
-}
-
-h1{
-color:#0b1220;
-}
-
-.box{
-border:1px solid #ccc;
-padding:20px;
-border-radius:10px;
-margin-bottom:20px;
-}
-</style>
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>RiskLayerLabs Report</title>
+  <style>
+    body{font-family:Arial;padding:40px;margin:0;background:#fff;color:#0b1220}
+    .top{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+    .top img{width:64px;height:auto;border-radius:12px}
+    h1{margin:0}
+    .box{border:1px solid #ccc;padding:20px;border-radius:10px;margin-bottom:16px}
+    ul{margin:8px 0 0 18px}
+    li{margin:6px 0}
+    .muted{color:#445066;font-size:12px;line-height:1.45}
+    .badge{display:inline-block;padding:6px 10px;border:1px solid #ccc;border-radius:999px;font-size:12px;margin-top:6px}
+    .premium{background:#f4f7ff}
+  </style>
 </head>
-
 <body>
 
-<h1>RiskLayerLabs - Informe de Riesgo</h1>
-
-<div class="box">
-<h3 id="cliente"></h3>
-<p id="fecha"></p>
+<div class="top">
+  <img src="./RiskLayerLabs_Lemon_Logo_512.png" alt="RiskLayerLabs"
+       onerror="this.style.display='none'">
+  <div>
+    <h1>RiskLayerLabs - Informe de Riesgo</h1>
+    <div class="badge" id="modo">Modo: Estándar</div>
+  </div>
 </div>
 
 <div class="box">
-<h3>Score</h3>
-<p id="score"></p>
+  <h3 id="cliente">Cliente: —</h3>
+  <p id="fecha" class="muted">Fecha: —</p>
+  <p><b>Sitio:</b> <span id="target">—</span></p>
 </div>
 
 <div class="box">
-<h3>Nivel</h3>
-<p id="nivel"></p>
+  <h3>Score</h3>
+  <p id="score">—</p>
 </div>
 
 <div class="box">
-<h3>Riesgos Detectados</h3>
-<p id="riesgos"></p>
+  <h3>Nivel</h3>
+  <p id="nivel">—</p>
+</div>
+
+<div class="box">
+  <h3>Riesgos detectados</h3>
+  <ul id="listaRiesgos"></ul>
+</div>
+
+<!-- PREMIUM -->
+<div class="box premium" id="premiumBox" style="display:none;">
+  <h3>Resumen ejecutivo</h3>
+  <p id="resumen" class="muted"></p>
+
+  <h3>Explicación y mejoras recomendadas</h3>
+  <ul id="detalles"></ul>
+
+  <h3>Impacto empresarial</h3>
+  <ul id="impacto"></ul>
+
+  <h3>Plan de mejora</h3>
+  <ul id="plan"></ul>
+
+  <h3>Recomendación final</h3>
+  <p id="final" class="muted"></p>
 </div>
 
 <button onclick="window.print()">Guardar como PDF</button>
 
 <script>
+  const dataRaw = localStorage.getItem("risklayer_report_data");
+  const params = new URLSearchParams(window.location.search);
+  const mode = (params.get("mode") || "free").toLowerCase();
 
-let data = JSON.parse(localStorage.getItem("risklayer_report_data"));
+  const LIB = {
+    "No HSTS": {
+      title:"Falta HSTS",
+      meaning:"Sin HSTS, el navegador puede aceptar downgrades a HTTP en ciertos escenarios.",
+      fix:"Agregar Strict-Transport-Security con max-age e includeSubDomains (validar antes de preload).",
+      impact:["Riesgo de downgrade a HTTP", "Menor postura de seguridad"]
+    },
+    "No CSP": {
+      title:"Falta CSP",
+      meaning:"Sin CSP, aumenta el impacto potencial de XSS y scripts no deseados.",
+      fix:"Implementar CSP gradual: comenzar con Report-Only y luego enforcement.",
+      impact:["Mayor exposición a inyección de scripts", "Riesgo de ejecución no autorizada"]
+    },
+    "No X-Content-Type-Options": {
+      title:"Falta X-Content-Type-Options",
+      meaning:"Sin nosniff, algunos navegadores pueden interpretar tipos de contenido de forma insegura.",
+      fix:"Agregar X-Content-Type-Options: nosniff.",
+      impact:["Superficie adicional de ataque"]
+    },
+    "No Clickjacking protection": {
+      title:"Falta protección anti-iframe",
+      meaning:"Sin X-Frame-Options o frame-ancestors, aumenta el riesgo de clickjacking.",
+      fix:"Agregar X-Frame-Options SAMEORIGIN o frame-ancestors en CSP.",
+      impact:["Posible engaño visual al usuario"]
+    },
+    "No HTTPS": {
+      title:"Sitio sin HTTPS",
+      meaning:"La conexión no está cifrada; aumenta riesgo de interceptación y baja la confianza.",
+      fix:"Activar HTTPS y redirigir HTTP → HTTPS.",
+      impact:["Confianza del usuario", "Integridad del tráfico"]
+    }
+  };
 
-let mode = new URLSearchParams(window.location.search).get("mode");
+  if(!dataRaw){
+    alert("No hay datos. Volvé a la web, hacé un análisis y luego abrí el reporte.");
+  } else {
+    const data = JSON.parse(dataRaw);
 
-document.getElementById("client").innerHTML = data.client;
-document.getElementById("target").innerHTML = data.target;
-document.getElementById("score").innerHTML = data.score + "/100";
-document.getElementById("level").innerHTML = data.level;
+    document.getElementById("modo").textContent = "Modo: " + (mode === "premium" ? "Premium" : "Estándar");
+    document.getElementById("cliente").textContent = "Cliente: " + (data.client || data.cliente || "Cliente");
+    document.getElementById("fecha").textContent = "Fecha: " + (data.generatedAt ? new Date(data.generatedAt).toLocaleString() : new Date().toLocaleString());
+    document.getElementById("target").textContent = data.target || "—";
+    document.getElementById("score").textContent = (data.score != null ? data.score + "/100" : "—");
+    document.getElementById("nivel").textContent = data.level || "—";
 
-if(mode === "premium"){
+    const risks = data.risks || [];
+    document.getElementById("listaRiesgos").innerHTML = risks.length
+      ? risks.map(r => `<li>${r}</li>`).join("")
+      : "<li>Sin hallazgos relevantes.</li>";
 
-document.getElementById("modeLabel").innerHTML = "Informe Premium";
+    if(mode === "premium"){
+      document.getElementById("premiumBox").style.display = "block";
 
-let detalles = "";
-let impacto = "";
-let plan = "";
+      document.getElementById("resumen").textContent =
+        "Se detectaron controles estándar ausentes que aumentan la superficie de riesgo. Implementar las mejoras sugeridas suele elevar el score y reducir exposición.";
 
-data.risks.forEach(r => {
+      document.getElementById("detalles").innerHTML = risks.length
+        ? risks.map(r => {
+            const info = LIB[r] || {title:r, meaning:"Control estándar ausente.", fix:"Aplicar la configuración recomendada.", impact:["Postura de seguridad"]};
+            return `<li><b>${info.title}</b><br><span class="muted">${info.meaning}</span><br><span class="muted"><b>Mejora:</b> ${info.fix}</span></li>`;
+          }).join("")
+        : "<li>Sin hallazgos relevantes.</li>";
 
-if(r=="No HSTS"){
-detalles += "<li><b>Falta de HSTS</b><br>El sitio no fuerza conexiones seguras, lo que puede permitir acceso sin cifrado.<br><b>Mejora:</b> Implementar Strict-Transport-Security.</li>";
-impacto += "<li>Riesgo de downgrade a HTTP</li>";
-plan += "<li>Agregar HSTS en el servidor o CDN.</li>";
-}
+      // Impacto consolidado
+      const impactSet = new Set();
+      risks.forEach(r => (LIB[r]?.impact || ["Postura de seguridad"]).forEach(x => impactSet.add(x)));
+      document.getElementById("impacto").innerHTML = [...impactSet].map(x=>`<li>${x}</li>`).join("") || "<li>Postura de seguridad</li>";
 
-if(r=="No CSP"){
-detalles += "<li><b>Falta de CSP</b><br>No hay control sobre scripts externos.<br><b>Mejora:</b> Implementar Content-Security-Policy.</li>";
-impacto += "<li>Mayor exposición a inyección de scripts</li>";
-plan += "<li>Configurar CSP en modo report-only.</li>";
-}
+      document.getElementById("plan").innerHTML = `
+        <li><b>Semana 1:</b> aplicar headers básicos (HSTS, nosniff, anti-iframe si aplica).</li>
+        <li><b>Semana 2–3:</b> implementar CSP en Report-Only, ajustar fuentes, pasar a enforcement.</li>
+        <li><b>Seguimiento:</b> re-analizar luego de cambios y mantener controles en despliegues.</li>
+      `;
 
-if(r=="No X-Content-Type-Options"){
-detalles += "<li><b>Falta X-Content-Type-Options</b><br>El navegador puede interpretar mal archivos.<br><b>Mejora:</b> Agregar header nosniff.</li>";
-impacto += "<li>Superficie adicional de ataque</li>";
-plan += "<li>Agregar X-Content-Type-Options: nosniff.</li>";
-}
-
-if(r=="No Clickjacking protection"){
-detalles += "<li><b>Falta protección anti-iframe</b><br>El sitio podría ser embebido en iframes.<br><b>Mejora:</b> Usar X-Frame-Options.</li>";
-impacto += "<li>Posible engaño visual al usuario</li>";
-plan += "<li>Agregar X-Frame-Options SAMEORIGIN.</li>";
-}
-
-});
-
-document.getElementById("details").innerHTML = detalles;
-document.getElementById("impact").innerHTML = impacto;
-document.getElementById("plan").innerHTML = plan;
-
-document.getElementById("exec").innerHTML =
-"El sitio presenta configuraciones ausentes que pueden aumentar la exposición a riesgos y afectar la confianza digital.";
-
-document.getElementById("final").innerHTML =
-"Se recomienda aplicar las mejoras priorizadas y volver a analizar.";
-
-document.getElementById("premiumSection").style.display="block";
-
-}else{
-
-document.getElementById("modeLabel").innerHTML = "Informe Estándar";
-
-let riesgos = "";
-
-data.risks.forEach(r => {
-riesgos += "<li>"+r+"</li>";
-});
-
-document.getElementById("risks").innerHTML = riesgos;
-
-document.getElementById("freeSection").style.display="block";
-
-}
-
+      document.getElementById("final").textContent =
+        "Recomendación: aplicar mejoras priorizadas y volver a emitir informe para evidenciar la mejora del score.";
+    }
+  }
 </script>
-
 
 </body>
 </html>
