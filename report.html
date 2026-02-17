@@ -52,24 +52,81 @@ margin-bottom:20px;
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("report"));
+let data = JSON.parse(localStorage.getItem("risklayer_report_data"));
 
-document.getElementById("cliente").innerHTML =
-"Cliente: "+data.cliente;
+let mode = new URLSearchParams(window.location.search).get("mode");
 
-document.getElementById("fecha").innerHTML =
-"Fecha: "+new Date().toLocaleString();
+document.getElementById("client").innerHTML = data.client;
+document.getElementById("target").innerHTML = data.target;
+document.getElementById("score").innerHTML = data.score + "/100";
+document.getElementById("level").innerHTML = data.level;
 
-document.getElementById("score").innerHTML =
-data.score;
+if(mode === "premium"){
 
-document.getElementById("nivel").innerHTML =
-data.level;
+document.getElementById("modeLabel").innerHTML = "Informe Premium";
 
-document.getElementById("riesgos").innerHTML =
-data.risks.join("<br>");
+let detalles = "";
+let impacto = "";
+let plan = "";
+
+data.risks.forEach(r => {
+
+if(r=="No HSTS"){
+detalles += "<li><b>Falta de HSTS</b><br>El sitio no fuerza conexiones seguras, lo que puede permitir acceso sin cifrado.<br><b>Mejora:</b> Implementar Strict-Transport-Security.</li>";
+impacto += "<li>Riesgo de downgrade a HTTP</li>";
+plan += "<li>Agregar HSTS en el servidor o CDN.</li>";
+}
+
+if(r=="No CSP"){
+detalles += "<li><b>Falta de CSP</b><br>No hay control sobre scripts externos.<br><b>Mejora:</b> Implementar Content-Security-Policy.</li>";
+impacto += "<li>Mayor exposición a inyección de scripts</li>";
+plan += "<li>Configurar CSP en modo report-only.</li>";
+}
+
+if(r=="No X-Content-Type-Options"){
+detalles += "<li><b>Falta X-Content-Type-Options</b><br>El navegador puede interpretar mal archivos.<br><b>Mejora:</b> Agregar header nosniff.</li>";
+impacto += "<li>Superficie adicional de ataque</li>";
+plan += "<li>Agregar X-Content-Type-Options: nosniff.</li>";
+}
+
+if(r=="No Clickjacking protection"){
+detalles += "<li><b>Falta protección anti-iframe</b><br>El sitio podría ser embebido en iframes.<br><b>Mejora:</b> Usar X-Frame-Options.</li>";
+impacto += "<li>Posible engaño visual al usuario</li>";
+plan += "<li>Agregar X-Frame-Options SAMEORIGIN.</li>";
+}
+
+});
+
+document.getElementById("details").innerHTML = detalles;
+document.getElementById("impact").innerHTML = impacto;
+document.getElementById("plan").innerHTML = plan;
+
+document.getElementById("exec").innerHTML =
+"El sitio presenta configuraciones ausentes que pueden aumentar la exposición a riesgos y afectar la confianza digital.";
+
+document.getElementById("final").innerHTML =
+"Se recomienda aplicar las mejoras priorizadas y volver a analizar.";
+
+document.getElementById("premiumSection").style.display="block";
+
+}else{
+
+document.getElementById("modeLabel").innerHTML = "Informe Estándar";
+
+let riesgos = "";
+
+data.risks.forEach(r => {
+riesgos += "<li>"+r+"</li>";
+});
+
+document.getElementById("risks").innerHTML = riesgos;
+
+document.getElementById("freeSection").style.display="block";
+
+}
 
 </script>
+
 
 </body>
 </html>
