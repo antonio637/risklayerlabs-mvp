@@ -75,6 +75,11 @@ let site = document.getElementById("url").value;
 
 let res = await fetch("https://yellow-field-4bee.antonio-5f5.workers.dev/analyze?url="+site);
 let data = await res.json();
+  
+  data.client = "Cliente";
+data.generatedAt = new Date().toISOString();
+localStorage.setItem("risklayer_report_data", JSON.stringify(data));
+
 
 document.getElementById("result").innerHTML =
 "Score: "+data.score+" | Nivel: "+data.level;
