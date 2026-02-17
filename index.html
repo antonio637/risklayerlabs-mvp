@@ -1,21 +1,70 @@
-<!DOCTYPE html>
-<html>
-<body style="background:#0b1220;color:white;font-family:Arial;text-align:center;padding:50px">
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RiskLayerLabs</title>
+
+<style>
+body{
+font-family:Arial;
+background:#0b1220;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+.card{
+background:#111a2e;
+padding:30px;
+border-radius:12px;
+width:60%;
+margin:auto;
+}
+
+button{
+padding:10px 15px;
+background:#00c2ff;
+border:none;
+border-radius:6px;
+font-weight:bold;
+cursor:pointer;
+}
+
+input{
+padding:10px;
+width:300px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
 
 <h1>RiskLayerLabs</h1>
-<p>Cyber Risk Score</p>
+<p>Visibilidad del riesgo digital</p>
 
-<input id="url" placeholder="https://example.com" style="padding:10px;width:300px">
-<button onclick="analyze()">Analyze</button>
+<input id="url" placeholder="https://example.com">
+<br><br>
+
+<button onclick="analyze()">Analizar</button>
 
 <h2 id="result"></h2>
+<div id="risks"></div>
+
+<br>
+
+<button onclick="downloadPDF()">Descargar PDF</button>
 
 <br><br>
 
-<a id="buy" href="https://risklayerlabs.lemonsqueezy.com/checkout/buy/fa60500d-65d7-430a-8a52-9c64b4b49358" target="_blank">
-
-<button>Unlock Full Report</button>
+<a href="https://risklayerlabs.lemonsqueezy.com/checkout/buy/fa60500d-65d7-430a-8a52-9c64b4b49358" target="_blank">
+<button>Desbloquear Reporte Completo</button>
 </a>
+
+</div>
 
 <script>
 
@@ -24,12 +73,17 @@ async function analyze(){
 let site = document.getElementById("url").value;
 
 let res = await fetch("https://yellow-field-4bee.antonio-5f5.workers.dev/analyze?url="+site);
-
 let data = await res.json();
 
 document.getElementById("result").innerHTML =
-"Score: "+data.score+"<br>Level: "+data.level+"<br>Risks: "+data.risks;
+"Score: "+data.score+" | Nivel: "+data.level;
 
+document.getElementById("risks").innerHTML =
+"<br>Riesgos:<br>"+data.risks.join("<br>");
+}
+
+function downloadPDF(){
+window.print();
 }
 
 </script>
