@@ -1,315 +1,116 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>RiskLayerLabs</title>
+<meta charset="utf-8">
+<title>RiskLayerLabs</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-  <style>
-    :root{
-      --bg:#0b1220;
-      --panel:#111a2e;
-      --panel2:#0f1730;
-      --line:#223055;
-      --txt:#ffffff;
-      --muted:#9aa4c7;
-      --accent:#00c2ff;
-      --accent2:#00a6d9;
-      --low:#4ade80;
-      --med:#facc15;
-      --high:#f87171;
-    }
+<style>
+body{
+font-family:'Inter',sans-serif;
+background:#0b1220;
+color:white;
+text-align:center;
+padding:40px;
+margin:0;
+}
+input{
+padding:12px;
+width:80%;
+border-radius:10px;
+border:none;
+background:#111a2e;
+color:white;
+}
+button{
+padding:12px;
+margin-top:10px;
+border-radius:10px;
+border:none;
+background:#00c2ff;
+font-weight:700;
+cursor:pointer;
+}
+.card{
+margin-top:20px;
+background:#111a2e;
+padding:20px;
+border-radius:12px;
+display:none;
+}
+.low{color:#4ade80;}
+.medium{color:#facc15;}
+.high{color:#f87171;}
+</style>
 
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      font-family:'Inter',sans-serif;
-      background: radial-gradient(1100px 600px at 20% 10%, rgba(0,194,255,.18), transparent 55%),
-                  radial-gradient(900px 600px at 80% 15%, rgba(0,120,255,.12), transparent 60%),
-                  var(--bg);
-      color:var(--txt);
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:28px 14px;
-    }
-
-    .container{
-      width:min(920px, 96vw);
-    }
-
-    .header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:14px;
-      margin-bottom:18px;
-      flex-wrap:wrap;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:12px;
-    }
-
-    .brand img{
-      width:54px;
-      height:54px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(0,0,0,.2);
-    }
-
-    h1{
-      margin:0;
-      font-size:34px;
-      font-weight:800;
-      letter-spacing:.2px;
-    }
-
-    .subtitle{
-      margin:2px 0 0;
-      color:var(--muted);
-      font-size:13px;
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid rgba(34,48,85,.9);
-      background:rgba(17,26,46,.55);
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    .panel{
-      background: linear-gradient(180deg, rgba(17,26,46,.96), rgba(15,23,48,.92));
-      border:1px solid rgba(34,48,85,.9);
-      border-radius:18px;
-      padding:18px;
-      box-shadow: 0 16px 50px rgba(0,0,0,.35);
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:14px;
-    }
-    @media (max-width:900px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    .heroTitle{
-      font-size:28px;
-      font-weight:800;
-      margin:8px 0 8px;
-      line-height:1.1;
-    }
-
-    .heroText{
-      margin:0 0 14px;
-      color:var(--muted);
-      line-height:1.5;
-      font-size:14px;
-    }
-
-    .row{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
-    }
-
-    input{
-      width:100%;
-      padding:14px 14px;
-      border-radius:12px;
-      border:1px solid rgba(42,58,102,.95);
-      background: rgba(11,18,32,.75);
-      color:var(--txt);
-      outline:none;
-      font-size:15px;
-    }
-    input:focus{
-      border-color: rgba(0,194,255,.75);
-      box-shadow:0 0 0 4px rgba(0,194,255,.12);
-    }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      padding:12px 14px;
-      border-radius:12px;
-      border:0;
-      cursor:pointer;
-      font-weight:800;
-      letter-spacing:.2px;
-      text-decoration:none;
-      user-select:none;
-    }
-    .btnPrimary{
-      background: linear-gradient(90deg, var(--accent), #1b7cff);
-      color:#04101a;
-    }
-    .btnPrimary:hover{filter:brightness(.97); transform:scale(1.01)}
-    .btnGhost{
-      background: rgba(11,18,32,.35);
-      border:1px solid rgba(34,48,85,.9);
-      color:var(--txt);
-    }
-    .btnGhost:hover{background: rgba(11,18,32,.5)}
-    .btn:disabled{opacity:.6; cursor:not-allowed; transform:none}
-
-    .card{
-      margin-top:14px;
-      background: rgba(11,18,32,.55);
-      border:1px solid rgba(34,48,85,.9);
-      border-radius:16px;
-      padding:14px;
-      display:none;
-    }
-
-    .kpis{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-      margin-top:10px;
-    }
-    .kpi{
-      background: rgba(17,26,46,.5);
-      border:1px solid rgba(34,48,85,.9);
-      border-radius:14px;
-      padding:12px;
-    }
-    .k{color:var(--muted); font-size:12px}
-    .v{font-size:18px; font-weight:800; margin-top:4px}
-
-    .scoreBig{
-      font-size:44px;
-      font-weight:800;
-      margin:6px 0 0;
-      line-height:1;
-    }
-
-    .lvlBadge{
-      display:inline-block;
-      margin-top:10px;
-      padding:6px 10px;
-      border-radius:999px;
-      border:1px solid rgba(34,48,85,.9);
-      background: rgba(17,26,46,.55);
-      font-weight:800;
-      font-size:12px;
-    }
-    .low{color:var(--low)}
-    .medium{color:var(--med)}
-    .high{color:var(--high)}
-
-    ul{margin:10px 0 0 18px}
-    li{margin:6px 0; color:#e8eefc}
-
-    .note{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.45;
-    }
-
-    .rightBox h2{
-      margin:6px 0 6px;
-      font-size:16px;
-    }
-    .price{
-      font-size:30px;
-      font-weight:900;
-      margin:10px 0 2px;
-    }
-    .per{
-      margin:0;
-      color:var(--muted);
-      font-size:12px;
-    }
-
-    footer{
-      margin-top:16px;
-      text-align:center;
-      color:#93a5d6;
-      font-size:12px;
-    }
-    footer a{color:#93a5d6}
-  </style>
 </head>
 
 <body>
-  <div class="container">
 
-    <div class="header">
-      <div class="brand">
-        <img src="./RiskLayerLabs_Lemon_Logo_512.png" alt="RiskLayerLabs logo"
-             onerror="this.style.display='none';document.getElementById('logoErr').style.display='block';">
-        <div>
-          <h1>RiskLayerLabs</h1>
-          <div class="subtitle">Visibilidad del riesgo digital (análisis pasivo)</div>
-          <div id="logoErr" style="display:none;color:#ffb3b3;margin-top:6px;font-size:12px">
-            Logo no encontrado. Subilo como archivo real con el nombre exacto:
-            <span style="font-family:ui-monospace,Menlo,Consolas,monospace">RiskLayerLabs_Lemon_Logo_512.png</span>
-          </div>
-        </div>
-      </div>
+<h1>RiskLayerLabs</h1>
+<p>Visibilidad del riesgo digital</p>
 
-      <div class="pill">⚡ Análisis en segundos • Headers/TLS públicos</div>
-    </div>
+<input id="url" placeholder="https://example.com">
 
-    <div class="panel grid">
+<br>
+<button onclick="analyze()">Analizar</button>
 
-      <!-- IZQUIERDA -->
-      <div>
-        <div class="heroTitle">Pegá una URL y obtené un score claro + hallazgos accionables.</div>
-        <p class="heroText">
-          Diagnóstico rápido para PyMEs, medianas y grandes. No es pentest: evalúa configuración visible (headers/TLS).
-        </p>
+<div id="resultCard" class="card">
 
-        <input id="url" placeholder="https://example.com" />
+<h3>Resultado</h3>
 
-        <div class="row">
-          <button id="anBtn" class="btn btnPrimary" onclick="analyze()">🔍 Analizar sitio</button>
-          <button class="btn btnGhost" onclick="openFreeReport()">📄 Informe estándar (PDF)</button>
-        </div>
+<p id="score"></p>
+<p id="level"></p>
 
-        <div class="card" id="resultCard">
-          <div class="kpis">
-            <div class="kpi">
-              <div class="k">Sitio</div>
-              <div class="v" id="target">—</div>
-            </div>
-            <div class="kpi">
-              <div class="k">Nivel</div>
-              <div class="v" id="levelText">—</div>
-            </div>
-          </div>
+<ul id="risks"></ul>
 
-          <div class="scoreBig" id="scoreBig">—</div>
-          <div class="lvlBadge" id="lvlBadge">—</div>
+<br>
 
-          <div style="margin-top:10px;font-weight:800">Riesgos detectados</div>
-          <ul id="risksList"></ul>
+<button onclick="downloadReport()">Informe Estándar</button>
 
-          <div class="note">
-            Evaluación pasiva basada en configuraciones públicas. No constituye auditoría de seguridad ni prueba de penetración.
-          </div>
-        </div>
-      </div>
+<br><br>
 
-      <!-- DERECHA -->
-      <div class
+<a href="https://risklayerlabs.lemonsqueezy.com/checkout/buy/fa60500d-65d7-430a-8a52-9c64b4b49358" target="_blank">
+<button>Desbloquear Premium</button>
+</a>
+
+</div>
+
+<script>
+
+async function analyze(){
+
+let site = document.getElementById("url").value;
+
+let res = await fetch("https://yellow-field-4bee.antonio-5f5.workers.dev/analyze?url="+site);
+let data = await res.json();
+
+data.client = "Cliente";
+data.generatedAt = new Date().toISOString();
+
+localStorage.setItem("risklayer_report_data", JSON.stringify(data));
+
+document.getElementById("resultCard").style.display="block";
+document.getElementById("score").innerHTML = "Score: " + data.score;
+document.getElementById("level").innerHTML = "Nivel: " + data.level;
+
+let risks="";
+data.risks.forEach(r => {
+risks += "<li>"+r+"</li>";
+});
+
+document.getElementById("risks").innerHTML = risks;
+
+}
+
+function downloadReport(){
+window.open("report.html?mode=free");
+}
+
+</script>
+
+</body>
+</html>
+
 
