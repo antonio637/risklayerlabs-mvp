@@ -83,8 +83,22 @@ document.getElementById("risks").innerHTML =
 }
 
 function downloadPDF(){
-window.print();
+
+let cliente = prompt("Nombre del cliente");
+
+let report = {
+cliente: cliente,
+score: document.getElementById("result").innerText.split("|")[0].replace("Score: ",""),
+level: document.getElementById("result").innerText.split("|")[1].replace(" Nivel: ",""),
+risks: document.getElementById("risks").innerText.split("\n").slice(2)
+};
+
+localStorage.setItem("report", JSON.stringify(report));
+
+window.open("report.html");
+
 }
+
 
 </script>
 
