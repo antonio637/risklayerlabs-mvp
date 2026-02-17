@@ -1,8 +1,7 @@
-<!doctype html>
-<html lang="es">
+<!DOCTYPE html>
+<html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>RiskLayerLabs</title>
 
 <style>
@@ -13,7 +12,6 @@ color:white;
 text-align:center;
 padding:40px;
 }
-
 .card{
 background:#111a2e;
 padding:30px;
@@ -21,7 +19,6 @@ border-radius:12px;
 width:60%;
 margin:auto;
 }
-
 button{
 padding:10px 15px;
 background:#00c2ff;
@@ -30,10 +27,12 @@ border-radius:6px;
 font-weight:bold;
 cursor:pointer;
 }
-
 input{
 padding:10px;
 width:300px;
+}
+.logo{
+margin-bottom:20px;
 }
 </style>
 
@@ -42,6 +41,8 @@ width:300px;
 <body>
 
 <div class="card">
+
+<img src="./RiskLayerLabs_Lemon_Logo_512.png" width="80" class="logo">
 
 <h1>RiskLayerLabs</h1>
 <p>Visibilidad del riesgo digital</p>
@@ -56,12 +57,12 @@ width:300px;
 
 <br>
 
-<button onclick="downloadPDF()">Descargar PDF</button>
+<button onclick="downloadPDF()">Descargar Informe Gratis</button>
 
 <br><br>
 
 <a href="https://risklayerlabs.lemonsqueezy.com/checkout/buy/fa60500d-65d7-430a-8a52-9c64b4b49358" target="_blank">
-<button>Desbloquear Reporte Completo</button>
+<button>Desbloquear Informe Premium</button>
 </a>
 
 </div>
@@ -80,25 +81,24 @@ document.getElementById("result").innerHTML =
 
 document.getElementById("risks").innerHTML =
 "<br>Riesgos:<br>"+data.risks.join("<br>");
+
+localStorage.setItem("report", JSON.stringify(data));
+
 }
 
 function downloadPDF(){
 
 let cliente = prompt("Nombre del cliente");
 
-let report = {
-cliente: cliente,
-score: document.getElementById("result").innerText.split("|")[0].replace("Score: ",""),
-level: document.getElementById("result").innerText.split("|")[1].replace(" Nivel: ",""),
-risks: document.getElementById("risks").innerText.split("\n").slice(2)
-};
+let report = JSON.parse(localStorage.getItem("report"));
+
+report.cliente = cliente;
 
 localStorage.setItem("report", JSON.stringify(report));
 
 window.open("report.html");
 
 }
-
 
 </script>
 
